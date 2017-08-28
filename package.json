@@ -1,0 +1,14 @@
+{
+  "name": "batmans_todo",
+  "version": "6.6.6",
+  "description": "batman's bad-guy-busting-todo",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "batman",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^2.2.31"
+  }
+}
