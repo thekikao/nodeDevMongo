@@ -25,7 +25,7 @@ MongoClient.connect(url, function(err, db) {
     //     console.error('## error to fetch', error);
     // });
 
-    // list users
+    // list all users
     db.collection('User').find({
         name: 'Batman'
     }).toArray().then((result) => {
