@@ -7,10 +7,11 @@ const {User} = require('./models/user.js');
 
 const app = express();
 
-// define middleware
+/** define middleware **/
 app.use(bodyParser.json());
 
-// setup route
+/** setup routes **/
+// save a todo
 app.post('/todos', (req, res) => {
     if (false) {
         let todo = new Todo({
@@ -29,6 +30,15 @@ app.post('/todos', (req, res) => {
             text: req.body.text
         }), res);
     }
+});
+
+// get all todos
+app.get('/todos', (req, res) => {
+    Todo.find().then((todos) => {
+        res.send({todos});
+    }, (err) => {
+        res.status(400).send(err);
+    });
 });
 
 // start server
