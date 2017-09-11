@@ -24,9 +24,11 @@ app.post('/todos', (req, res) => {
         });
     }
 
-    saveRecordPost(new Todo({
-        text: req.body.text
-    }), res);
+    if (true) {
+        saveRecordPost(new Todo({
+            text: req.body.text
+        }), res);
+    }
 });
 
 // start server
@@ -53,3 +55,5 @@ if (false) {
     // close connection
     // mongoose.connection.close();
 }
+
+module.exports = {app};
