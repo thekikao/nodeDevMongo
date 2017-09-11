@@ -26,7 +26,7 @@ app.post('/todos', (req, res) => {
 
     saveRecordPost(new Todo({
         text: req.body.text
-    }), res)
+    }), res);
 });
 
 // start server
