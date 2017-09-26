@@ -48,21 +48,21 @@ app.get('/todos/:id', (req, res) => {
 
     // error handling
     if (!ObjectID.isValid(todoId)) {
-        console.log('!! error: id not valid');
+        // console.log('!! error: id not valid');
         return res.status(400).send('!! error: id not valid');
     }
 
     Todo.findById(todoId).then((result) => {
         // error handling
         if (!result) {
-            console.log('!! error: id not found');
+            // console.log('!! error: id not found');
             return res.status(404).send('!! error: id not found');
         }
 
-        console.log('## todo findById', require('util').inspect(result, true, 5, true));
-        res.send(result);
+        // console.log('## todo findById', require('util').inspect(result, true, 5, true));
+        res.send({todo: result});
     }).catch((err) => {
-        console.log('## err', err);
+        // console.log('## err', err);
         res.status(400).send(err);
     });
 });

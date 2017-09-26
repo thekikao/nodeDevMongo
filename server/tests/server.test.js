@@ -1,12 +1,15 @@
 const expect = require('expect');
 const supertest = require('supertest');
+const {ObjectID} = require('mongodb');
 
 const {app} = require('./../server.js');
 const {Todo} = require('./../models/todo.js');
 
 const dummyTodos = [{
+    _id: new ObjectID(),
     text: 'first test todo'
 }, {
+    _id: new ObjectID(),
     text: 'second test todo'
 }];
 
@@ -77,7 +80,7 @@ describe('GET /todos', () => {
             .expect((res) => {
                 // console.log('## res', res);
                 // console.log('## res.body', require('util').inspect(res.body.todos, true, 5, true));
-                expect(res.body.todos).toBe(2);
+                expect(res.body.todos.length).toBe(2);
                 expect(res.body.todos[0].text).toBe(dummyTodos[0].text);
                 expect(res.body.todos[1].text).toBe(dummyTodos[1].text);
             })
@@ -94,5 +97,33 @@ describe('GET /todos', () => {
                     done();
                 }).catch((err) => done(err));
             });
+    });
+});
+
+describe('GET /todos/:id', () => {
+    it('get todo by id', (done) => {
+        supertest(app)
+            .get(`/todos/${dummyTodos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                // console.log('## res', res);
+                // console.log('## res.body', require('util').inspect(res.body, true, 5, true));
+                expect(res.body.todo.text).toBe(dummyTodos[0].text);
+            })
+            .end(done);
+    });
+
+    it('get 404 if id not found', (done) => {
+        supertest(app)
+            .get(`/todos/${new ObjectID().toHexString()}`)
+            .expect(404)
+            .end(done);
+    });
+
+    it('get 400 if id is not an obejct id', (done) => {
+        supertest(app)
+            .get(`/todos/123abc`)
+            .expect(400)
+            .end(done);
     });
 });
