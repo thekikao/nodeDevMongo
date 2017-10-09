@@ -127,3 +127,41 @@ describe('GET /todos/:id', () => {
             .end(done);
     });
 });
+
+describe('DELETE /todos/:id', () => {
+    it('remove todo by id', (done) => {
+        supertest(app)
+            .delete(`/todos/${dummyTodos[0]._id.toHexString()}`)
+            .expect(200)
+            .expect((res) => {
+                // console.log('## res', res);
+                // console.log('## res.body', require('util').inspect(res.body, true, 5, true));
+                expect(res.body.todo.text).toBe(dummyTodos[0].text);
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                // check if record was removed in database
+                Todo.findById(dummyTodos[0]._id.toHexString()).then((todo) => {
+                    expect(todo).toBe(null);
+                    done();
+                }).catch((err) => done(err));
+            });
+    });
+
+    it('get 404 if id not found', (done) => {
+        supertest(app)
+            .delete(`/todos/${new ObjectID().toHexString()}`)
+            .expect(404)
+            .end(done);
+    });
+
+    it('get 400 if id is not an obejct id', (done) => {
+        supertest(app)
+            .delete(`/todos/123abc`)
+            .expect(400)
+            .end(done);
+    });
+});
