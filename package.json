@@ -4,8 +4,12 @@
   "description": "batman's bad-guy-busting-todo",
   "main": "index.js",
   "scripts": {
+    "start": "node server/server.js",
     "test": "mocha server/**/*.test.js",
     "test-watch": "nodemon --exec 'npm test'"
+  },
+  "engines": {
+      "node": "8.4.0"
   },
   "author": "batman",
   "license": "ISC",
