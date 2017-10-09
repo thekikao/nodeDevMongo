@@ -10,7 +10,9 @@ const dummyTodos = [{
     text: 'first test todo'
 }, {
     _id: new ObjectID(),
-    text: 'second test todo'
+    text: 'second test todo',
+    done: true,
+    completedAt: 222
 }];
 
 
@@ -163,5 +165,63 @@ describe('DELETE /todos/:id', () => {
             .delete(`/todos/123abc`)
             .expect(400)
             .end(done);
+    });
+});
+
+describe('PATCH /todos/:id', () => {
+    it('update a todo', (done) => {
+        var testText = 'mysterions testText';
+
+        // make request with supertestText
+        supertest(app)
+            .patch(`/todos/${dummyTodos[0]._id.toHexString()}`)
+            .send({
+                text: testText,
+                done: true
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe(testText);
+                expect(res.body.todo.done).toBe(true);
+                // expect(res.body.todo.completedAt).toNotBe(null);
+                // expect(res.body.todo.completedAt).toExist();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                // check if record is updated in database
+                Todo.find({text: testText}).then((todos) => {
+                    expect(todos.length).toBe(1);
+                    expect(todos[0].text).toBe(testText);
+                    done();
+                }).catch((err) => done(err));
+            });
+    });
+
+    it(`reset 'completedAt' if todo not 'done'`, (done) => {
+        supertest(app)
+            .patch(`/todos/${dummyTodos[1]._id.toHexString()}`)
+            .send({
+                done: false
+            })
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.done).toBe(false);
+                expect(res.body.todo.completedAt).toBeNull();
+            })
+            .end((err, res) => {
+                if (err) {
+                    return done(err);
+                }
+
+                // check if record is updated in database
+                Todo.find().then((todos) => {
+                    expect(todos.length).toBe(2);
+                    expect(todos[1].done).toBe(false);
+                    done();
+                }).catch((err) => done(err));
+            });
     });
 });
