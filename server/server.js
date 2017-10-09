@@ -1,3 +1,4 @@
+const lodash = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
@@ -93,6 +94,44 @@ app.delete('/todos/:id', (req, res) => {
     }
 
     Todo.findByIdAndRemove(todoId).then((result) => {
+        // error handling
+        if (!result) {
+            // console.log('!! error: id not found');
+            return res.status(404).send('!! error: id not found');
+        }
+
+        // console.log('## todo findByIdAndRemove', require('util').inspect(result, true, 5, true));
+        res.send({todo: result});
+    }).catch((err) => {
+        // console.log('## err', err);
+        res.status(400).send(err);
+    });
+});
+
+// update todo by id
+app.patch('/todos/:id', (req, res) => {
+    let todoId = req.params.id;
+    let body = lodash.pick(req.body, ['text', 'done']);
+
+    // error handling
+    if (!ObjectID.isValid(todoId)) {
+        // console.log('!! error: id not valid');
+        return res.status(400).send('!! error: id not valid');
+    }
+
+    if (lodash.isBoolean(body.done) && body.done) {
+        body.completedAt = new Date().getTime();
+    } else {
+        body.done = false;
+        body.completedAt = null;
+    }
+
+
+    Todo.findByIdAndUpdate(todoId, {
+        $set: body
+    }, {
+        new: true
+    }).then((result) => {
         // error handling
         if (!result) {
             // console.log('!! error: id not found');
