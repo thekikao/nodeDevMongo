@@ -67,6 +67,46 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
+// delete all todos
+app.delete('/todos', (req, res) => {
+    Todo.remove({}).then((todos) => {
+        // error handling
+        if (!result) {
+            // console.log('!! error: something went wrong');
+            return res.status(404).send('!! error: something went wrong');
+        }
+
+        res.send({todos});
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
+
+// remove todo by id
+app.delete('/todos/:id', (req, res) => {
+    let todoId = req.params.id;
+
+    // error handling
+    if (!ObjectID.isValid(todoId)) {
+        // console.log('!! error: id not valid');
+        return res.status(400).send('!! error: id not valid');
+    }
+
+    Todo.findByIdAndRemove(todoId).then((result) => {
+        // error handling
+        if (!result) {
+            // console.log('!! error: id not found');
+            return res.status(404).send('!! error: id not found');
+        }
+
+        // console.log('## todo findByIdAndRemove', require('util').inspect(result, true, 5, true));
+        res.send({todo: result});
+    }).catch((err) => {
+        // console.log('## err', err);
+        res.status(400).send(err);
+    });
+});
+
 
 // start server
 let port = process.env.PORT || 3000;
