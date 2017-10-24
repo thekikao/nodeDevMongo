@@ -1,3 +1,5 @@
+const config = require('./config/config.js');
+
 const lodash = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -148,9 +150,9 @@ app.patch('/todos/:id', (req, res) => {
 
 
 // start server
-let port = process.env.PORT || 3000;
+let port = process.env.PORT;
 app.listen(port, () => {
-    console.info(`** server is up on port ${port} **`);
+    console.info(`** server is up on port ${port} in '${config.env || 'production'}' mode **`);
 });
 
 

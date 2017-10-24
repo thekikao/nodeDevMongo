@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost:27017/MysterionsTodo', {
-    useMongoClient: true,
+mongoose.connect(process.env.MONGOLAB_URI, {
+    useMongoClient: true
 });
 
 // helper functions
