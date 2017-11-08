@@ -15,7 +15,7 @@ const app = express();
 app.use(bodyParser.json());
 
 /** setup routes **/
-// save a todo
+// POST: save a todo
 app.post('/todos', (req, res) => {
     if (false) {
         let todo = new Todo({
@@ -36,7 +36,7 @@ app.post('/todos', (req, res) => {
     }
 });
 
-// get all todos
+// GET: get all todos
 app.get('/todos', (req, res) => {
     Todo.find().then((todos) => {
         res.send({todos});
@@ -45,7 +45,7 @@ app.get('/todos', (req, res) => {
     });
 });
 
-// get todo by id
+// GET: get todo by id
 app.get('/todos/:id', (req, res) => {
     let todoId = req.params.id;
 
@@ -70,7 +70,7 @@ app.get('/todos/:id', (req, res) => {
     });
 });
 
-// delete all todos
+// DELETE: delete all todos
 app.delete('/todos', (req, res) => {
     Todo.remove({}).then((todos) => {
         // error handling
@@ -85,7 +85,7 @@ app.delete('/todos', (req, res) => {
     });
 });
 
-// remove todo by id
+// DELETE: remove todo by id
 app.delete('/todos/:id', (req, res) => {
     let todoId = req.params.id;
 
@@ -110,7 +110,7 @@ app.delete('/todos/:id', (req, res) => {
     });
 });
 
-// update todo by id
+// PATCH: update todo by id
 app.patch('/todos/:id', (req, res) => {
     let todoId = req.params.id;
     let body = lodash.pick(req.body, ['text', 'done']);
@@ -142,6 +142,24 @@ app.patch('/todos/:id', (req, res) => {
 
         // console.log('## todo findByIdAndRemove', require('util').inspect(result, true, 5, true));
         res.send({todo: result});
+    }).catch((err) => {
+        // console.log('## err', err);
+        res.status(400).send(err);
+    });
+});
+
+
+// POST: save a user
+app.post('/users', (req, res) => {
+    let body = lodash.pick(req.body, ['email', 'password']);
+    let user = new User(body);
+
+    // saveRecordPost(new User(user), res);
+
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then((token) => {
+        res.header('x-auth', token).send(user);
     }).catch((err) => {
         // console.log('## err', err);
         res.status(400).send(err);

@@ -7,7 +7,6 @@ const {User} = require('./../server/models/user.js');
 let todoId = '59db6dcc12dd11629f06d0c1';
 let userId = '59b1a671fec4c52509b042f6';
 
-
 if (true) {
     // check todo
     if (!ObjectID.isValid(todoId)) {
